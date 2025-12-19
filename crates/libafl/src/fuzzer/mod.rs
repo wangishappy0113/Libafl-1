@@ -918,11 +918,11 @@ where
         let id = if let Some(id) = state.current_corpus_id()? {
             id // we are resuming
         } else {
+            //println!("----------------------------------------");
             let id = self.scheduler.next(state)?;
             state.set_corpus_id(id)?; // set up for resume
             id
         };
-
         // Mark the elapsed time for the scheduler
         #[cfg(feature = "introspection")]
         state.introspection_stats_mut().mark_scheduler_time();
@@ -937,9 +937,7 @@ where
         // Init timer for manager
         #[cfg(feature = "introspection")]
         state.introspection_stats_mut().start_timer();
-
         self.process_events(state, executor, manager)?;
-
         // Mark the elapsed time for the manager
         #[cfg(feature = "introspection")]
         state.introspection_stats_mut().mark_manager_time();

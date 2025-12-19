@@ -441,7 +441,6 @@ where
     pub unsafe fn start(&mut self) -> Result<(), EmulatorDriverError> {
         loop {
             let mut exit_result = unsafe { self.run_qemu() };
-
             // Handle QEMU exit
             if let Some(exit_handler_result) = ED::post_qemu_exec(self, &mut exit_result)? {
                 match exit_handler_result {

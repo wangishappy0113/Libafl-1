@@ -269,7 +269,11 @@ where
         manager: &mut EM,
     ) -> Result<(), Error> {
         if self.should_restart(state)? {
+            //println!("没到重启上线次数，允许继续执行阶段！！！！");
             self.perform(fuzzer, executor, state, manager)?;
+        }
+        else {
+            //println!("到达重启次数上限，不允许执行该阶段了！！！！！");
         }
         self.clear_progress(state)
     }

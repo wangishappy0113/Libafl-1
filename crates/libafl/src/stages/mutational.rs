@@ -172,6 +172,7 @@ where
     S: HasMetadata + HasNamedMetadata + HasCurrentCorpusId,
 {
     fn should_restart(&mut self, state: &mut S) -> Result<bool, Error> {
+        //RetryCountRestartHelper::no_retry(state, &self.name)
         RetryCountRestartHelper::should_restart(state, &self.name, 3)
     }
 
@@ -238,7 +239,7 @@ where
     I1: MutatedTransform<I2, S> + Clone,
     I2: Input,
     M: Mutator<I1, S>,
-    S: HasRand + HasCurrentTestcase<I2> + MaybeHasClientPerfMonitor,
+    S: HasRand + HasCurrentTestcase<I2> + MaybeHasClientPerfMonitor + HasCurrentCorpusId,
     Z: Evaluator<E, EM, I2, S>,
 {
     /// Runs this (mutational) stage for the given testcase
@@ -249,6 +250,9 @@ where
         state: &mut S,
         manager: &mut EM,
     ) -> Result<(), Error> {
+/*         if let Ok(corpus_id) = state.current_corpus_id() {
+            println!("[Mutation] 测试用例 ID: {:?}", corpus_id);
+        } */
         start_timer!(state);
 
         // Here saturating_sub is needed as self.iterations() might be actually smaller than the previous value before reset.
@@ -268,7 +272,6 @@ where
 
         for _ in 0..num {
             let mut input = input.clone();
-
             start_timer!(state);
             let mutated = self.mutator_mut().mutate(state, &mut input)?;
             mark_feature_time!(state, PerfFeature::Mutate);

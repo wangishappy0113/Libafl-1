@@ -28,7 +28,7 @@ use crate::{
 };
 
 /// AFL++'s `CAL_CYCLES_FAST` + 1
-const CAL_STAGE_START: usize = 4;
+const CAL_STAGE_START: usize = 6;
 /// AFL++'s `CAL_CYCLES` + 1
 const CAL_STAGE_MAX: usize = 8;
 
@@ -161,10 +161,13 @@ where
             // println!("calibration; corpus.scheduled_count() : {}", corpus.scheduled_count());
 
             if testcase.scheduled_count() > 0 {
+                //println!("因为不是第一次调用校准阶段，所以跳过");
                 return Ok(());
             }
         }
-
+/*         if let Ok(corpus_id) = state.current_corpus_id() {
+            //println!("[Calibration] 测试用例 ID: {:?}", corpus_id);
+        } */
         let mut iter = self.stage_max;
 
         // If we restarted after a timeout or crash, do less iterations.
